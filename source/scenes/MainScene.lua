@@ -39,6 +39,9 @@ function scene:init()
 	-- ...
 
 	-- Your code here
+    MainScene.tick = 0
+    letters = {"*A*","*B*","*C*","*D*","*E*","*F*"}
+    letters_size = table.getSize(letters)
 end
 
 -- When transitioning from another scene, this runs as soon as this
@@ -46,6 +49,12 @@ end
 function scene:enter()
 	scene.super.enter(self)
 	-- Your code here
+    tileImage = Graphics.imagetable.new("assets/images/tile_medium")
+    tileAnimation = Noble.Animation.new(tileImage)
+    tileAnimation:addState("default", 1, 2, nil, true, nil, 8)
+    tileSprite = NobleSprite(tileAnimation)
+    tileSprite:add()
+    tileSprite:play()
 end
 
 -- This runs once a transition from another scene is complete.
@@ -58,14 +67,16 @@ end
 function scene:update()
 	scene.super.update(self)
 	-- Your code here
+    MainScene.tick += 1
 end
 
 -- This runs once per frame, and is meant for drawing code.
 function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
-
-
+    tileSprite:draw(100, 100)
+    currentLetter = letters[math.floor(MainScene.tick/30) % letters_size + 1]
+    Noble.Text.draw(currentLetter, 126, 124)
 end
 
 -- This runs as as soon as a transition to another scene begins.
