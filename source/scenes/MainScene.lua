@@ -6,16 +6,11 @@
 -- and rename it.
 --
 
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--- !!! Rename "SceneTemplate" to your scene's name in these first three lines. !!!
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+import 'scripts/LetterTile'
 
 MainScene = {}
 class("MainScene").extends(NobleScene)
 local scene = MainScene
-
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
--- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 -- It is recommended that you declare, but don't yet define,
 -- your scene-specific varibles and methods here. Use "local" where possible.
@@ -40,21 +35,15 @@ function scene:init()
 
 	-- Your code here
     MainScene.tick = 0
-    letters = {"*A*","*B*","*C*","*D*","*E*","*F*"}
-    letters_size = table.getSize(letters)
 end
 
 -- When transitioning from another scene, this runs as soon as this
 -- scene needs to be visible (this moment depends on which transition type is used).
 function scene:enter()
 	scene.super.enter(self)
+
 	-- Your code here
-    tileImage = Graphics.imagetable.new("assets/images/tile_medium")
-    tileAnimation = Noble.Animation.new(tileImage)
-    tileAnimation:addState("default", 1, 2, nil, true, nil, 8)
-    tileSprite = NobleSprite(tileAnimation)
-    tileSprite:add()
-    tileSprite:play()
+	initTiles()
 end
 
 -- This runs once a transition from another scene is complete.
@@ -74,9 +63,7 @@ end
 function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
-    tileSprite:draw(100, 100)
-    currentLetter = letters[math.floor(MainScene.tick/30) % letters_size + 1]
-    Noble.Text.draw(currentLetter, 126, 124)
+	drawTiles()
 end
 
 -- This runs as as soon as a transition to another scene begins.
@@ -196,3 +183,24 @@ scene.inputHandler = {
 		-- Your code here
 	end
 }
+
+function initTiles()
+    letters = {"A","B","C","D","E","F","G","H"}
+	letterTiles = table.create(#letters, 0)
+
+	for i = 1, #letters do
+		local letterTile = LetterTile.new(
+			letters[i],
+			math.random(0+10, 400-60-10),
+			math.random(0+10, 240-40-10)
+		)
+		letterTiles[i] = letterTile
+		letterTiles[i]:add()
+	end
+end
+
+function drawTiles()
+	for i = 1, #letterTiles do
+		letterTiles[i]:draw()
+	end
+end
