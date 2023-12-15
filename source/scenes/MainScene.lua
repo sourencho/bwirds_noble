@@ -206,17 +206,19 @@ function initTiles()
 			math.random(0+10, 400-LetterTile.SIZE_X-10),
 			math.random(0+10, 240-LetterTile.SIZE_Y-40)
 		)
-		scene.letterTiles[i] = letterTile
-		scene.letterTiles[i]:add()
+		table.insert(scene.letterTiles, letterTile)
+		letterTile:add()
 	end
 end
 
 function drawTiles()
 	for i = 1, #scene.letterTiles do
 		local tile = scene.letterTiles[i]
-		if tile ~= nil then
-			tile:draw()
+		if tile == nil then
+			goto cont
 		end
+		tile:draw()
+		::cont::
 	end
 end
 
@@ -224,13 +226,15 @@ function attemptCapture()
 	print(#scene.letterTiles)
 	for i = #scene.letterTiles, 1, -1 do
 		local tile = scene.letterTiles[i]
-		if tile ~= nil then -- todo: figure out how to do continue in lua
-			local distSqr = Utilities.vDistSqr(tile:getCenter(), scene.cursor.pos)
-			if (distSqr < Utilities.sqr(scene.cursor.size+10)) then
-				tile:remove()
-				scene.bag:addLetter(tile.letter)
-				scene.letterTiles[i] = nil
-			end
+		if tile == nil then -- todo: figure out how to do continue in lua
+			goto cont
 		end
+		local distSqr = Utilities.vDistSqr(tile:getCenter(), scene.cursor.pos)
+		if (distSqr < Utilities.sqr(scene.cursor.size+10)) then
+			scene.bag:addLetter(tile.letter)
+			table.remove(scene.letterTiles, i)
+			tile:remove()
+		end
+		::cont::
 	end
 end
