@@ -1,12 +1,6 @@
---
--- SceneTemplate.lua
---
--- Use this as a starting point for your game's scenes.
--- Copy this file to your root "scenes" directory,
--- and rename it.
---
-
 import 'scripts/LetterTile'
+import 'scripts/Cursor'
+
 
 MainScene = {}
 class("MainScene").extends(NobleScene)
@@ -44,6 +38,7 @@ function scene:enter()
 
 	-- Your code here
 	initTiles()
+	initCursor()
 end
 
 -- This runs once a transition from another scene is complete.
@@ -57,6 +52,7 @@ function scene:update()
 	scene.super.update(self)
 	-- Your code here
     MainScene.tick += 1
+	self.cursor:update()
 end
 
 -- This runs once per frame, and is meant for drawing code.
@@ -64,6 +60,7 @@ function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
 	drawTiles()
+	drawCursor()
 end
 
 -- This runs as as soon as a transition to another scene begins.
@@ -130,6 +127,7 @@ scene.inputHandler = {
 	end,
 	leftButtonHold = function()
 		-- Your code here
+		scene.cursor:applyInput(-1, 0)
 	end,
 	leftButtonUp = function()
 		-- Your code here
@@ -142,6 +140,7 @@ scene.inputHandler = {
 	end,
 	rightButtonHold = function()
 		-- Your code here
+		scene.cursor:applyInput(1, 0)
 	end,
 	rightButtonUp = function()
 		-- Your code here
@@ -154,6 +153,7 @@ scene.inputHandler = {
 	end,
 	upButtonHold = function()
 		-- Your code here
+		scene.cursor:applyInput(0, -1)
 	end,
 	upButtonUp = function()
 		-- Your code here
@@ -166,6 +166,7 @@ scene.inputHandler = {
 	end,
 	downButtonHold = function()
 		-- Your code here
+		scene.cursor:applyInput(0, 1)
 	end,
 	downButtonUp = function()
 		-- Your code here
@@ -185,22 +186,30 @@ scene.inputHandler = {
 }
 
 function initTiles()
-    letters = {"A","B","C","D","E","F","G","H"}
-	letterTiles = table.create(#letters, 0)
+    local letters = {"A","B","C","D","E","F","G","H"}
+	scene.letterTiles = table.create(#letters, 0)
 
 	for i = 1, #letters do
 		local letterTile = LetterTile.new(
 			letters[i],
-			math.random(0+10, 400-60-10),
-			math.random(0+10, 240-40-10)
+			math.random(0+10, 400-LetterTile.SIZE_X-10),
+			math.random(0+10, 240-LetterTile.SIZE_Y-10)
 		)
-		letterTiles[i] = letterTile
-		letterTiles[i]:add()
+		scene.letterTiles[i] = letterTile
+		scene.letterTiles[i]:add()
 	end
 end
 
 function drawTiles()
-	for i = 1, #letterTiles do
-		letterTiles[i]:draw()
+	for i = 1, #scene.letterTiles do
+		scene.letterTiles[i]:draw()
 	end
+end
+
+function initCursor()
+	scene.cursor = Cursor.new(200, 200, 8)
+end
+
+function drawCursor()
+	scene.cursor:draw()
 end

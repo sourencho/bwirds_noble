@@ -5,3 +5,31 @@
 function Utilities.getZero()
 	return 0
 end
+
+-- Subtract v2 from v1
+function Utilities.vSubV(v1, v2)
+    return { x = v1.x - v2.x, y = v1.y - v2.y }
+end
+
+-- Compute magnitude of v
+function Utilities.vMag(v)
+    return math.sqrt((v.x * v.x) + (v.y * v.y))
+end
+
+-- Normalizes v into a unit vector
+function Utilities.vNorm(v)
+    local len = Utilities.vMag(v)
+	if len == 0 then
+		return {x=0, y=0}
+	else
+		return {x=v.x/len, y=v.y/len}
+	end
+end
+
+function Utilities.vDist(v1, v2)
+    return math.sqrt(math.sqr(v2.x-v1.x)+math.sqr(v2.y-v1.y))
+end
+
+function Utilities.vDistSqr(v1, v2)
+    return math.sqr(v2.x-v1.x)+math.sqr(v2.y-v1.y)
+end
