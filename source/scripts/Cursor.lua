@@ -3,6 +3,7 @@ Cursor = {}
 function Cursor.new(__x, __y, __minSize, __maxSize)
     local cursor = {}
 
+
     cursor.x = __x
     cursor.y = __y
     cursor.minSize = __minSize
@@ -12,13 +13,14 @@ function Cursor.new(__x, __y, __minSize, __maxSize)
     cursor.speed = 7
     cursor.input = {x=0, y=0}
 
+
     function cursor:draw()
-        playdate.graphics.drawCircleAtPoint(
+        Graphics.drawCircleAtPoint(
             self.x,
             self.y,
             self.size
         )
-        playdate.graphics.fillCircleAtPoint(
+        Graphics.fillCircleAtPoint(
             self.x,
             self.y,
             self.size - 3

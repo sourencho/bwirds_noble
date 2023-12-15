@@ -1,5 +1,6 @@
 import 'scripts/LetterTile'
 import 'scripts/Cursor'
+import 'scripts/Bag'
 
 
 MainScene = {}
@@ -38,7 +39,11 @@ function scene:enter()
 
 	-- Your code here
 	initTiles()
-	initCursor()
+	scene.cursor = Cursor.new(200, 200, 8)
+	scene.bag = Bag.new()
+    scene.bag:addLetter("X")
+    scene.bag:addLetter("Y")
+    scene.bag:addLetter("P")
 end
 
 -- This runs once a transition from another scene is complete.
@@ -60,7 +65,8 @@ function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
 	drawTiles()
-	drawCursor()
+	scene.cursor:draw()
+	scene.bag:draw()
 end
 
 -- This runs as as soon as a transition to another scene begins.
@@ -204,12 +210,4 @@ function drawTiles()
 	for i = 1, #scene.letterTiles do
 		scene.letterTiles[i]:draw()
 	end
-end
-
-function initCursor()
-	scene.cursor = Cursor.new(200, 200, 8)
-end
-
-function drawCursor()
-	scene.cursor:draw()
 end
