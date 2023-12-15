@@ -41,9 +41,6 @@ function scene:enter()
 	initTiles()
 	scene.cursor = Cursor.new(200, 200, 8)
 	scene.bag = Bag.new()
-    scene.bag:addLetter("X")
-    scene.bag:addLetter("Y")
-    scene.bag:addLetter("P")
 end
 
 -- This runs once a transition from another scene is complete.
@@ -100,15 +97,19 @@ scene.inputHandler = {
 	--
 	AButtonDown = function()			-- Runs once when button is pressed.
 		-- Your code here
+		scene.cursor:applyAInputDown()
 	end,
 	AButtonHold = function()			-- Runs every frame while the player is holding button down.
 		-- Your code here
 	end,
 	AButtonHeld = function()			-- Runs after button is held for 1 second.
 		-- Your code here
+		scene.cursor:applyAInputHeld()
+		attemptCapture()
 	end,
 	AButtonUp = function()				-- Runs once when button is released.
 		-- Your code here
+		scene.cursor:applyAInputUp()
 	end,
 
 	-- B button
@@ -130,10 +131,11 @@ scene.inputHandler = {
 	--
 	leftButtonDown = function()
 		-- Your code here
+		scene.cursor:applyMoveInput(-1, 0)
 	end,
 	leftButtonHold = function()
 		-- Your code here
-		scene.cursor:applyInput(-1, 0)
+		scene.cursor:applyMoveInput(-1, 0)
 	end,
 	leftButtonUp = function()
 		-- Your code here
@@ -143,10 +145,11 @@ scene.inputHandler = {
 	--
 	rightButtonDown = function()
 		-- Your code here
+		scene.cursor:applyMoveInput(1, 0)
 	end,
 	rightButtonHold = function()
 		-- Your code here
-		scene.cursor:applyInput(1, 0)
+		scene.cursor:applyMoveInput(1, 0)
 	end,
 	rightButtonUp = function()
 		-- Your code here
@@ -156,10 +159,11 @@ scene.inputHandler = {
 	--
 	upButtonDown = function()
 		-- Your code here
+		scene.cursor:applyMoveInput(0, -1)
 	end,
 	upButtonHold = function()
 		-- Your code here
-		scene.cursor:applyInput(0, -1)
+		scene.cursor:applyMoveInput(0, -1)
 	end,
 	upButtonUp = function()
 		-- Your code here
@@ -169,10 +173,11 @@ scene.inputHandler = {
 	--
 	downButtonDown = function()
 		-- Your code here
+		scene.cursor:applyMoveInput(0, 1)
 	end,
 	downButtonHold = function()
 		-- Your code here
-		scene.cursor:applyInput(0, 1)
+		scene.cursor:applyMoveInput(0, 1)
 	end,
 	downButtonUp = function()
 		-- Your code here
@@ -199,7 +204,7 @@ function initTiles()
 		local letterTile = LetterTile.new(
 			letters[i],
 			math.random(0+10, 400-LetterTile.SIZE_X-10),
-			math.random(0+10, 240-LetterTile.SIZE_Y-10)
+			math.random(0+10, 240-LetterTile.SIZE_Y-40)
 		)
 		scene.letterTiles[i] = letterTile
 		scene.letterTiles[i]:add()
@@ -208,6 +213,24 @@ end
 
 function drawTiles()
 	for i = 1, #scene.letterTiles do
-		scene.letterTiles[i]:draw()
+		local tile = scene.letterTiles[i]
+		if tile ~= nil then
+			tile:draw()
+		end
+	end
+end
+
+function attemptCapture()
+	print(#scene.letterTiles)
+	for i = #scene.letterTiles, 1, -1 do
+		local tile = scene.letterTiles[i]
+		if tile ~= nil then -- todo: figure out how to do continue in lua
+			local distSqr = Utilities.vDistSqr(tile:getCenter(), scene.cursor.pos)
+			if (distSqr < Utilities.sqr(scene.cursor.size+10)) then
+				tile:remove()
+				scene.bag:addLetter(tile.letter)
+				scene.letterTiles[i] = nil
+			end
+		end
 	end
 end
