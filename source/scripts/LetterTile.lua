@@ -10,8 +10,8 @@ function LetterTile.new(__letter, __x, __y)
 
 
     letterTile.letter = __letter
-    letterTile.letterStr = "*"..__letter.."*"
-    letterTile.pos = {x=__x, y=__y}
+    letterTile.letterStr = "*" .. __letter .. "*"
+    letterTile.pos = { x = __x, y = __y }
 
     -- Create animated sprite
     letterTile.tileImage = Graphics.imagetable.new("assets/images/tile_small")
@@ -32,15 +32,15 @@ function LetterTile.new(__letter, __x, __y)
         self.tileSprite:draw(self.pos.x, self.pos.y)
         Noble.Text.draw(
             self.letterStr,
-            self.pos.x+LetterTile.LETTER_OFFSET_X,
-            self.pos.y+LetterTile.LETTER_OFFSET_Y
+            self.pos.x + LetterTile.LETTER_OFFSET_X,
+            self.pos.y + LetterTile.LETTER_OFFSET_Y
         )
     end
 
     function letterTile:getCenter()
         return {
-            x=self.pos.x+LetterTile.SIZE_X/2,
-            y=self.pos.y+LetterTile.SIZE_Y/2,
+            x = self.pos.x + LetterTile.SIZE_X / 2,
+            y = self.pos.y + LetterTile.SIZE_Y / 2,
         }
     end
 

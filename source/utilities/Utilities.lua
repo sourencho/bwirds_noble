@@ -3,11 +3,11 @@
 -- Try to avoid name collisions.
 
 function Utilities.getZero()
-	return 0
+    return 0
 end
 
 function Utilities.sqr(x)
-    return x*x
+    return x * x
 end
 
 -- Add v2 to v1
@@ -33,17 +33,17 @@ end
 -- Normalizes v into a unit vector
 function Utilities.vNorm(v)
     local len = Utilities.vMag(v)
-	if len == 0 then
-		return {x=0, y=0}
-	else
-		return {x=v.x/len, y=v.y/len}
-	end
+    if len == 0 then
+        return { x = 0, y = 0 }
+    else
+        return { x = v.x / len, y = v.y / len }
+    end
 end
 
 function Utilities.vDist(v1, v2)
-    return math.sqrt(Utilities.sqr(v2.x-v1.x)+Utilities.sqr(v2.y-v1.y))
+    return math.sqrt(Utilities.sqr(v2.x - v1.x) + Utilities.sqr(v2.y - v1.y))
 end
 
 function Utilities.vDistSqr(v1, v2)
-    return Utilities.sqr(v2.x-v1.x)+Utilities.sqr(v2.y-v1.y)
+    return Utilities.sqr(v2.x - v1.x) + Utilities.sqr(v2.y - v1.y)
 end

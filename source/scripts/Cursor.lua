@@ -4,13 +4,13 @@ function Cursor.new(__x, __y, __minSize, __maxSize)
     local cursor = {}
 
 
-    cursor.pos = {x=__x, y=__y}
+    cursor.pos = { x = __x, y = __y }
     cursor.minSize = __minSize
     cursor.maxSize = __maxSize
 
     cursor.size = __minSize
     cursor.speed = 7
-    cursor.input = {x=0, y=0}
+    cursor.input = { x = 0, y = 0 }
     cursor.charging = false
     cursor.capturing = 0
 
@@ -64,11 +64,10 @@ function Cursor.new(__x, __y, __minSize, __maxSize)
             Utilities.vScale(delta, self.speed)
         )
 
-        self.input = {x=0, y=0}
+        self.input = { x = 0, y = 0 }
 
-        self.capturing = math.max(0, self.capturing-1)
+        self.capturing = math.max(0, self.capturing - 1)
     end
-
 
     return cursor
 end

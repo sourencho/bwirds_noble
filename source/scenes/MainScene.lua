@@ -29,7 +29,7 @@ function scene:init()
 	-- ...
 
 	-- Your code here
-    MainScene.tick = 0
+	MainScene.tick = 0
 end
 
 -- When transitioning from another scene, this runs as soon as this
@@ -53,7 +53,7 @@ end
 function scene:update()
 	scene.super.update(self)
 	-- Your code here
-    MainScene.tick += 1
+	MainScene.tick += 1
 	self.cursor:update()
 end
 
@@ -82,6 +82,7 @@ function scene:pause()
 	scene.super.pause(self)
 	-- Your code here
 end
+
 function scene:resume()
 	scene.super.resume(self)
 	-- Your code here
@@ -95,19 +96,19 @@ scene.inputHandler = {
 
 	-- A button
 	--
-	AButtonDown = function()			-- Runs once when button is pressed.
+	AButtonDown = function() -- Runs once when button is pressed.
 		-- Your code here
 		scene.cursor:applyAInputDown()
 	end,
-	AButtonHold = function()			-- Runs every frame while the player is holding button down.
+	AButtonHold = function() -- Runs every frame while the player is holding button down.
 		-- Your code here
 	end,
-	AButtonHeld = function()			-- Runs after button is held for 1 second.
+	AButtonHeld = function() -- Runs after button is held for 1 second.
 		-- Your code here
 		scene.cursor:applyAInputHeld()
 		attemptCapture()
 	end,
-	AButtonUp = function()				-- Runs once when button is released.
+	AButtonUp = function() -- Runs once when button is released.
 		-- Your code here
 		scene.cursor:applyAInputUp()
 	end,
@@ -185,26 +186,26 @@ scene.inputHandler = {
 
 	-- Crank
 	--
-	cranked = function(change, acceleratedChange)	-- Runs when the crank is rotated. See Playdate SDK documentation for details.
+	cranked = function(change, acceleratedChange) -- Runs when the crank is rotated. See Playdate SDK documentation for details.
 		-- Your code here
 	end,
-	crankDocked = function()						-- Runs once when when crank is docked.
+	crankDocked = function() -- Runs once when when crank is docked.
 		-- Your code here
 	end,
-	crankUndocked = function()						-- Runs once when when crank is undocked.
+	crankUndocked = function() -- Runs once when when crank is undocked.
 		-- Your code here
 	end
 }
 
 function initTiles()
-    local letters = {"A","B","C","D","E","F","G","H"}
+	local letters = { "A", "B", "C", "D", "E", "F", "G", "H" }
 	scene.letterTiles = table.create(#letters, 0)
 
 	for i = 1, #letters do
 		local letterTile = LetterTile.new(
 			letters[i],
-			math.random(0+10, 400-LetterTile.SIZE_X-10),
-			math.random(0+10, 240-LetterTile.SIZE_Y-40)
+			math.random(0 + 10, 400 - LetterTile.SIZE_X - 10),
+			math.random(0 + 10, 240 - LetterTile.SIZE_Y - 40)
 		)
 		table.insert(scene.letterTiles, letterTile)
 		letterTile:add()
@@ -230,7 +231,7 @@ function attemptCapture()
 			goto cont
 		end
 		local distSqr = Utilities.vDistSqr(tile:getCenter(), scene.cursor.pos)
-		if (distSqr < Utilities.sqr(scene.cursor.size+10)) then
+		if (distSqr < Utilities.sqr(scene.cursor.size + 10)) then
 			scene.bag:addLetter(tile.letter)
 			table.remove(scene.letterTiles, i)
 			tile:remove()
