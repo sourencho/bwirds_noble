@@ -1,8 +1,8 @@
 import 'libraries/noble/Noble'
-
 import 'utilities/Utilities'
-
 import 'scenes/MainScene'
+import 'scenes/WordScene'
+
 
 Noble.Settings.setup({
 	Difficulty = "Medium"
@@ -14,4 +14,4 @@ Noble.GameData.setup({
 
 Noble.showFPS = true
 
-Noble.new(MainScene)
+Noble.new(WordScene)

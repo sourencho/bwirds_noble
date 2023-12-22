@@ -3,6 +3,6 @@ author=sourencho
 description=Words
 bundleID=com.sourencho.bwirds
 version=0.0.1
-buildNumber=262
+buildNumber=350
 imagePath=assets/launcher/
 launchSoundPath=assets/launcher/sound.wav
