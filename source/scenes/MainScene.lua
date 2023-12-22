@@ -226,7 +226,6 @@ function drawTiles()
 end
 
 function attemptCapture()
-	print(#scene.letterTiles)
 	for i = #scene.letterTiles, 1, -1 do
 		local tile = scene.letterTiles[i]
 		if tile == nil then -- todo: figure out how to do continue in lua

@@ -47,3 +47,7 @@ end
 function Utilities.vDistSqr(v1, v2)
     return Utilities.sqr(v2.x - v1.x) + Utilities.sqr(v2.y - v1.y)
 end
+
+function Utilities.getModIndex(i, len)
+    return (i - 1) % len + 1
+end

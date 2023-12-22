@@ -20,9 +20,9 @@ function scene:init()
 
 	-- Your code here
 	scene.wordScroller = WordScroller.new(
-		40,
-		120,
-		{ "A", "A", "E", "B", "C", "T", "L", "L"}
+		10 + 80 + 10,
+		20,
+		{ "B", "W", "I", "R", "D", "S", "O", "E", "S"}
 	)
 end
 
@@ -43,12 +43,25 @@ end
 function scene:update()
 	scene.super.update(self)
 	-- Your code here
+	scene.wordScroller:update()
 end
 
 -- This runs once per frame, and is meant for drawing code.
 function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
+	Graphics.fillRoundRect(10, 10, 80, 220, 3)
+	Graphics.setImageDrawMode(Graphics.kDrawModeFillWhite)
+	Noble.Text.draw(
+		"*B* *I* *R*\n*O* *W*\n*DS* *ES*",
+		45,
+		20,
+		Noble.Text.ALIGN_CENTER
+	)
+	Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
+
+	Graphics.drawRoundRect(10 + 10 + 80, 10, 130, 220, 3)
+	Graphics.fillRoundRect(10 + 10 + 80 + 130 + 10, 10, 150, 220, 3)
 	scene.wordScroller:draw()
 end
 
