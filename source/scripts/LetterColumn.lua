@@ -21,6 +21,8 @@ function LetterColumn.new(__x, __y, __letters)
         this:resetDisabledLetters(false)
 
         self.index = 1
+
+        self.count = 1
     end
 
     function this:draw()
@@ -35,8 +37,8 @@ function LetterColumn.new(__x, __y, __letters)
             local x = self.x + 15
             local y = self.y + 10
                 + (k - 1) * LetterColumn.LETTER_SPACING
-                + (k < LetterColumn.HALF_ROW_COUNT + 1 and -10 or 0)
-                + (k > LetterColumn.HALF_ROW_COUNT + 1 and 10 or 0)
+                + (k < LetterColumn.HALF_ROW_COUNT + 1 and -8 or 0)
+                + (k > LetterColumn.HALF_ROW_COUNT + 1 and 12 or 0)
 
             local l =
                 k == LetterColumn.HALF_ROW_COUNT + 1
@@ -45,12 +47,14 @@ function LetterColumn.new(__x, __y, __letters)
             if n == sIndex or n == eIndex then
                 l = "-"
             end
-            Noble.Text.draw(
-                l,
-                x,
-                y,
-                Noble.Text.ALIGN_CENTER
-            )
+            if self.isSelected or k == LetterColumn.HALF_ROW_COUNT + 1 then
+                Noble.Text.draw(
+                    l,
+                    x,
+                    y,
+                    Noble.Text.ALIGN_CENTER
+                )
+            end
             k += 1
         end
     end

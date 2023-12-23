@@ -3,33 +3,61 @@ import 'scripts/LetterColumn'
 
 WordScroller = {}
 
-WordScroller.MAX_SIZE = 6
+WordScroller.MAX_SIZE = 5
 WordScroller.COL_SPACING = 20
 
 function WordScroller.new(__x, __y, __letters)
     local this = {}
 
-    this.x = __x
-    this.y = __y
+    function this:init(x, y, letters)
+        self.x = x
+        self.y = y
 
-    this.index = 1
+        self.index = 1
 
-    this.letterColumns = table.create(WordScroller.MAX_SIZE, 0)
-    for i = 1, WordScroller.MAX_SIZE do
-        local x = this.x + (i - 1) * WordScroller.COL_SPACING
-        local y = this.y
-        local letterColumn = LetterColumn.new(x, y, __letters)
-        this.letterColumns[i] = letterColumn
+        self.letterColumns = {}
+        -- for i = 1, WordScroller.MAX_SIZE do
+        --      local x = this.x + (i - 1) * WordScroller.COL_SPACING
+        --      local y = this.y
+        --     local letterColumn = LetterColumn.new(x, y, __letters)
+        --     this.letterColumns[i] = letterColumn
+        -- end
+
+        self:addLetterColumn()
+
+        self.usedLetters = table.create(#letters, 0)
     end
 
-    this.usedLetters = table.create(#__letters, 0)
+    function this:addLetterColumn()
+        local steps = table.reduce(self.letterColumns, function(acc, l)
+            return acc + (l.count or 0)
+        end, 0)
+        if (steps > WordScroller.MAX_SIZE) then
+            return
+        end
+        local x = this.x + steps * WordScroller.COL_SPACING
+        local y = this.y
+
+        local letterColumn = LetterColumn.new(x, y, __letters)
+        table.insert(self.letterColumns, letterColumn)
+    end
+
+    function this:removeLetterColumn()
+        if (#self.letterColumns == 1) then
+            return
+        end
+
+        table.remove(self.letterColumns, #self.letterColumns)
+    end
 
     function this:nextItem()
-        self.index = self.index % #self.letterColumns + 1
+        self:addLetterColumn()
+        self.index = #self.letterColumns
     end
 
     function this:prevItem()
-        self.index = (self.index - 2) % #self.letterColumns + 1
+        self:removeLetterColumn()
+        self.index = #self.letterColumns
     end
 
     function this:scrollUp()
@@ -64,13 +92,27 @@ function WordScroller.new(__x, __y, __letters)
         end
     end
 
-    function this:draw()
-        -- Noble.Text.draw(">", self.x, self.y - 15)
+    function this:draw(tick)
+        local steps = table.reduce(self.letterColumns, function(acc, l)
+            return acc + (l.count or 0)
+        end, 0)
+        local letterColumn = self.letterColumns[#self.letterColumns]
+        steps = steps - letterColumn.count + 1
+
+        local x = this.x + steps * WordScroller.COL_SPACING - 10
+        local y = this.y + (LetterColumn.HALF_ROW_COUNT + 1) * LetterColumn.LETTER_SPACING + 10
+        if tick % 50 > 25 then
+            Graphics.setLineWidth(2)
+            Graphics.drawLine(x, y, x + 10, y)
+        end
+
         for i = 1, #self.letterColumns do
             local letterColumn = self.letterColumns[i]
             letterColumn:draw()
         end
     end
+
+    this:init(__x, __y, __letters)
 
     return this
 end

@@ -19,10 +19,13 @@ function scene:init()
 	-- ...
 
 	-- Your code here
+	scene.tick = 0
+
 	scene.wordScroller = WordScroller.new(
-		10 + 80 + 10,
+		10 + 80 + 10 + 8,
 		20,
-		{ "B", "W", "I", "R", "D", "S", "O", "E", "S"}
+		{ "B", "W", "I", "R", "D", "S", "O", "E", "S" }
+	-- { "B", "W", "W" }
 	)
 end
 
@@ -43,6 +46,7 @@ end
 function scene:update()
 	scene.super.update(self)
 	-- Your code here
+	scene.tick += 1
 	scene.wordScroller:update()
 end
 
@@ -50,19 +54,61 @@ end
 function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
-	Graphics.fillRoundRect(10, 10, 80, 220, 3)
+	Noble.Text.draw(
+		"*BWAG*",
+		50,
+		10,
+		Noble.Text.ALIGN_CENTER
+	)
+	Graphics.drawRoundRect(10, 30, 80, 100, 3)
+	Noble.Text.draw(
+		"*B* *I* *R* *X*\n*G* *M* *S* *V*\n*O* *W*\n*DS* *ES*",
+		50,
+		40,
+		Noble.Text.ALIGN_CENTER
+	)
+	Graphics.fillRoundRect(10, 30 + 100, 80, 100, 3)
 	Graphics.setImageDrawMode(Graphics.kDrawModeFillWhite)
 	Noble.Text.draw(
-		"*B* *I* *R*\n*O* *W*\n*DS* *ES*",
-		45,
-		20,
+		"*B* *I* *R* *X*\n*G* *M* *S* *V*\n*O* *W*\n*DS* *ES*",
+		50,
+		40 + 100,
 		Noble.Text.ALIGN_CENTER
 	)
 	Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
 
-	Graphics.drawRoundRect(10 + 10 + 80, 10, 130, 220, 3)
-	Graphics.fillRoundRect(10 + 10 + 80 + 130 + 10, 10, 150, 220, 3)
-	scene.wordScroller:draw()
+	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 222, 3)
+	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 221, 3)
+	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 220, 3)
+	-- Noble.Text.draw(
+	-- 	"^",
+	-- 	10 + 10 + 80 + 130,
+	-- 	110,
+	-- 	Noble.Text.ALIGN_LEFT
+	-- )
+	scene.wordScroller:draw(scene.tick)
+
+	Noble.Text.draw(
+		"*CATALOG*",
+		10 + 10 + 80 + 150 + 10 + 65,
+		10,
+		Noble.Text.ALIGN_CENTER
+	)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 202, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 201, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 200, 3)
+	Noble.Text.draw(
+		"*WORDS*",
+		10 + 10 + 80 + 150 + 20,
+		40,
+		Noble.Text.ALIGN_LEFT
+	)
+	Noble.Text.draw(
+		"*95*",
+		10 + 10 + 80 + 150 + 20 + 90,
+		40,
+		Noble.Text.ALIGN_LEFT
+	)
 end
 
 -- This runs as as soon as a transition to another scene begins.

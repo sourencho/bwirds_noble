@@ -51,3 +51,11 @@ end
 function Utilities.getModIndex(i, len)
     return (i - 1) % len + 1
 end
+
+function table.reduce(__table, __function, __initial)
+    local accumulator = __initial
+    for _, value in ipairs(__table) do
+        accumulator = __function(accumulator, value)
+    end
+    return accumulator
+end
