@@ -15,30 +15,40 @@ function WordScroller.new(__x, __y, __letters)
 
         self.index = 1
 
+        self.letters = __letters
         self.letterColumns = {}
-        -- for i = 1, WordScroller.MAX_SIZE do
-        --      local x = this.x + (i - 1) * WordScroller.COL_SPACING
-        --      local y = this.y
-        --     local letterColumn = LetterColumn.new(x, y, __letters)
-        --     this.letterColumns[i] = letterColumn
-        -- end
+        self.usedLetters = table.create(#self.letters, 0)
 
         self:addLetterColumn()
-
-        self.usedLetters = table.create(#letters, 0)
     end
 
     function this:addLetterColumn()
+        -- find pos
         local steps = table.reduce(self.letterColumns, function(acc, l)
             return acc + (l.count or 0)
         end, 0)
-        if (steps > WordScroller.MAX_SIZE) then
-            return
-        end
+
+        if (steps > WordScroller.MAX_SIZE) then return end
+
         local x = this.x + steps * WordScroller.COL_SPACING
         local y = this.y
 
-        local letterColumn = LetterColumn.new(x, y, __letters)
+        -- update used letters
+        for i = 1, #self.letters do
+            self.usedLetters[i] = false
+        end
+        for i = 1, #self.letterColumns do
+            local letterColumn = self.letterColumns[i]
+            self.usedLetters[letterColumn.index] = true
+        end
+
+        if all(self.usedLetters) then
+            return
+        end
+
+        -- create
+        local letterColumn = LetterColumn.new(x, y, self.letters,
+            self.usedLetters)
         table.insert(self.letterColumns, letterColumn)
     end
 
@@ -74,22 +84,6 @@ function WordScroller.new(__x, __y, __letters)
             local letterColumn = self.letterColumns[i]
             letterColumn:setSelected(i == self.index)
         end
-
-        -- Set disabled
-        for i = 1, #self.usedLetters do
-            self.usedLetters[i] = false
-        end
-        for i = 1, #self.letterColumns do
-            local letterColumn = self.letterColumns[i]
-            self.usedLetters[letterColumn.index] = true
-        end
-        for i = 1, #self.letterColumns do
-            local letterColumn = self.letterColumns[i]
-            letterColumn:resetDisabledLetters(false)
-            for i = 1, #self.usedLetters do
-                letterColumn:setDisabledLetter(i, self.usedLetters[i])
-            end
-        end
     end
 
     function this:draw(tick)
@@ -100,7 +94,8 @@ function WordScroller.new(__x, __y, __letters)
         steps = steps - letterColumn.count + 1
 
         local x = this.x + steps * WordScroller.COL_SPACING - 10
-        local y = this.y + (LetterColumn.HALF_ROW_COUNT + 1) * LetterColumn.LETTER_SPACING + 10
+        local y = this.y +
+        (LetterColumn.HALF_ROW_COUNT + 1) * LetterColumn.LETTER_SPACING + 10
         if tick % 50 > 25 then
             Graphics.setLineWidth(2)
             Graphics.drawLine(x, y, x + 10, y)

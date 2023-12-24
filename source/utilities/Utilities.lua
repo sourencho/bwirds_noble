@@ -59,3 +59,21 @@ function table.reduce(__table, __function, __initial)
     end
     return accumulator
 end
+
+function all(__table)
+    for _, value in ipairs(__table) do
+        if not value then
+            return false
+        end
+    end
+    return true
+end
+
+function any(__table)
+    for _, value in ipairs(__table) do
+        if value then
+            return true
+        end
+    end
+    return false
+end

@@ -21,11 +21,13 @@ function scene:init()
 	-- Your code here
 	scene.tick = 0
 
+	scene.letters = { "B", "W", "I", "R", "D", "S", "O", "E", "S" }
 	scene.wordScroller = WordScroller.new(
 		10 + 80 + 10 + 8,
 		20,
-		{ "B", "W", "I", "R", "D", "S", "O", "E", "S" }
-	-- { "B", "W", "W" }
+		scene.letters
+		-- { "A", "B", "C", "D", "E"}
+		-- { "B", "W", "W" }
 	)
 end
 
