@@ -18,7 +18,6 @@ function WordScroller.new(__x, __y, __letters)
 
         self.letters = letters
         self.letterColumns = {}
-        self.usedLetters = table.create(#self.letters, 0)
 
         self:addLetterColumn()
     end
@@ -34,16 +33,17 @@ function WordScroller.new(__x, __y, __letters)
         local x = this.x + steps * WordScroller.COL_SPACING
         local y = this.y
 
-        -- update used letters
+        -- calcluate disabled letters
+        local disabledLetters = table.create(#self.letters, 0)
         for i = 1, #self.letters do
-            self.usedLetters[i] = false
+            disabledLetters[i] = (steps + #self.letters[i]) > WordScroller.MAX_SIZE
         end
         for i = 1, #self.letterColumns do
             local letterColumn = self.letterColumns[i]
-            self.usedLetters[letterColumn.index] = true
+            disabledLetters[letterColumn.index] = true
         end
 
-        if all(self.usedLetters) then
+        if all(disabledLetters) and steps < WordScroller.MIN_SIZE then
             return
         end
 
@@ -52,7 +52,7 @@ function WordScroller.new(__x, __y, __letters)
             x,
             y,
             self.letters,
-            self.usedLetters,
+            disabledLetters,
             steps >= WordScroller.MIN_SIZE
         )
         table.insert(self.letterColumns, letterColumn)
@@ -82,10 +82,12 @@ function WordScroller.new(__x, __y, __letters)
     end
 
     function this:scrollUp()
+        if #self.letterColumns == 0 then return end
         self.letterColumns[self.index]:prevItem()
     end
 
     function this:scrollDown()
+        if #self.letterColumns == 0 then return end
         self.letterColumns[self.index]:nextItem()
     end
 
@@ -97,8 +99,17 @@ function WordScroller.new(__x, __y, __letters)
         return word:sub(1, #word-1)
     end
 
-    function this:getUsedLetterIndices()
-        return table.shallowcopy(self.usedLetters)
+    -- returns an array of true/false values that corresponds to used letters
+    function this:getUsedLetters()
+        local usedLetters = table.create(#self.letters, 0)
+        for i = 1, #self.letters do
+            usedLetters[i] = false
+        end
+        for i = 1, #self.letterColumns do
+            local letterColumn = self.letterColumns[i]
+            usedLetters[letterColumn.index] = true
+        end
+        return usedLetters
     end
 
     function this:update()
@@ -110,10 +121,24 @@ function WordScroller.new(__x, __y, __letters)
     end
 
     function this:draw(tick)
+        if #self.letterColumns == 0 then
+            Noble.Text.draw(
+                "*-*",
+                this.x,
+                this.y +
+                    (LetterColumn.HALF_ROW_COUNT + 1) *
+                        LetterColumn.LETTER_SPACING + 10
+                ,
+                Noble.Text.ALIGN_CENTER
+            )
+            return
+        end
+
         local steps = table.reduce(self.letterColumns, function(acc, l)
             return acc + (l.count or 0)
         end, 0)
         local letterColumn = self.letterColumns[#self.letterColumns]
+
         steps = steps - letterColumn.count + 1
 
         local x = this.x + steps * WordScroller.COL_SPACING - 10

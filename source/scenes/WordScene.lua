@@ -17,7 +17,7 @@ function scene:init()
 
 	scene.tick = 0
 
-	scene.letters = { "A", "ED", "P", "L", "Y", "W", "I", "S", "ING"}
+	scene.letters = { "A", "ED", "P", "L", "Y", "W", "I", "S", "ING", "X", "E"}
 	table.sort(scene.letters)
 
 	scene:createWordScroller(scene.letters)
@@ -25,7 +25,7 @@ function scene:init()
 	scene.wordList = WordList.new(
 		10 + 10 + 80 + 150 + 20,
 		40,
-		130
+		110
 	)
 
 	scene.buyerOne = NobleSprite("assets/images/test_face.png")
@@ -65,24 +65,22 @@ function scene:drawBackground()
 		10,
 		Noble.Text.ALIGN_CENTER
 	)
+	Graphics.drawRoundRect(10, 30, 80, 200+2, 3)
+	Graphics.drawRoundRect(10, 30, 80, 200+1, 3)
 	Graphics.drawRoundRect(10, 30, 80, 200, 3)
-	for i=1,#scene.letters do
-		Noble.Text.draw(
-			scene.letters[i],
-			10+40,
-			40+(i-1)*20,
-			Noble.Text.ALIGN_CENTER
-		)
+	for r=0,8 do
+		for c=0,1 do
+			local n = r+1 + c*9
+			if n <= #scene.letters then
+				Noble.Text.draw(
+					scene.letters[n],
+					37*(c+1)-5,
+					10+30+r*20,
+					Noble.Text.ALIGN_CENTER
+				)
+			end
+		end
 	end
-	-- Graphics.fillRoundRect(10, 30 + 100, 80, 100, 3)
-	-- Graphics.setImageDrawMode(Graphics.kDrawModeFillWhite)
-	-- Noble.Text.draw(
-	-- 	"*B* *I* *R* *X*\n*G* *M* *S* *V*\n*O* *W*\n*DS* *ES*",
-	-- 	50,
-	-- 	40 + 100,
-	-- 	Noble.Text.ALIGN_CENTER
-	-- )
-	-- Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
 
 	-- word scroller
 	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 222, 3)
@@ -93,21 +91,21 @@ function scene:drawBackground()
 	-- word list
 	Noble.Text.draw(
 		"*BWIRDS*",
-		10 + 10 + 80 + 150 + 10 + 65,
+		10 + 10 + 80 + 150 + 10 + 55,
 		10,
 		Noble.Text.ALIGN_CENTER
 	)
-	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 120 + 2, 3)
-	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 120 + 1, 3)
-	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 120, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 110, 120 + 2, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 110, 120 + 1, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 110, 120, 3)
 	scene.wordList:draw()
 
 	-- buyers
 	local buyerBoxX = 10 + 10 + 80 + 150 + 10
 	local buyerBoxY = 30 + 120 + 10
-	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 130, 70 + 2, 3)
-	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 130, 70 + 1, 3)
-	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 130, 70, 3)
+	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 110, 70 + 2, 3)
+	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 110, 70 + 1, 3)
+	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 110, 70, 3)
 	scene.buyerOne:moveTo(buyerBoxX+20, buyerBoxY+10+10)
 	scene.buyerTwo:moveTo(buyerBoxX+20, buyerBoxY+10+10+20+10)
 	Noble.Text.draw(
@@ -122,6 +120,18 @@ function scene:drawBackground()
 		buyerBoxY+10+20+10+1,
 		Noble.Text.ALIGN_LEFT
 	)
+
+	-- NEXT
+	local nextBoxX = 10 + 10 + 80 + 150 + 10 + 10 + 110
+	Noble.Text.draw(
+		"*>*",
+		nextBoxX + 5,
+		10,
+		Noble.Text.ALIGN_CENTER
+	)
+	Graphics.drawRoundRect(nextBoxX, 30, 10, 200 + 2, 3)
+	Graphics.drawRoundRect(nextBoxX, 30, 10, 200 + 1, 3)
+	Graphics.drawRoundRect(nextBoxX, 30, 10, 200, 3)
 end
 
 -- This runs as as soon as a transition to another scene begins.
@@ -264,7 +274,7 @@ function scene:submitWord(word)
 	scene.wordList:addWord(word)
 
 	-- remove used letters
-	local usedLetterIndices = scene.wordScroller:getUsedLetterIndices()
+	local usedLetterIndices = scene.wordScroller:getUsedLetters()
 	for i=#usedLetterIndices, 1, -1 do
 		if usedLetterIndices[i] then
 			table.remove(scene.letters, i)
