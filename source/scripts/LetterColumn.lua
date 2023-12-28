@@ -14,7 +14,6 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
 
         self.letters = {}
         table.shallowcopy(__letters, self.letters)
-        -- table.insert(self.letters, "-")
         table.sort(self.letters)
 
         self.disabledLetters = table.create(#self.letters, 0)
@@ -22,8 +21,6 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
 
         self.index = 0
         self:nextItem()
-
-        self.count = 1
     end
 
     function this:draw()
@@ -31,12 +28,8 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
         local x = self.x + 15
         local y = self.y + 10
             + LetterColumn.HALF_ROW_COUNT * LetterColumn.LETTER_SPACING
-        Noble.Text.draw(
-            "*" .. self.letters[self.index] .. "*",
-            x,
-            y,
-            Noble.Text.ALIGN_CENTER
-        )
+        local letter = self.letters[self.index]
+        self:drawLetter(x, y, letter, true)
 
         if not self.isSelected then return end
 
@@ -52,12 +45,7 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
                     LetterColumn.LETTER_SPACING
                 -- + (k < LetterColumn.HALF_ROW_COUNT + 1 and -8 or 0)
                 -- + (k > LetterColumn.HALF_ROW_COUNT + 1 and 12 or 0)
-                Noble.Text.draw(
-                    letter,
-                    x,
-                    y,
-                    Noble.Text.ALIGN_CENTER
-                )
+                self:drawLetter(x, y, letter, false)
                 k -= 1
             end
             i -= 1
@@ -70,52 +58,32 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
             if not self.disabledLetters[i] then
                 local letter = self.letters[i]
                 local x = self.x + 15
-                local y = self.y + 10 + 10
+                local y = self.y + 10 + 8
                     + (k + LetterColumn.HALF_ROW_COUNT) *
                     LetterColumn.LETTER_SPACING
-                -- + (k < LetterColumn.HALF_ROW_COUNT + 1 and -8 or 0)
-                -- + (k > LetterColumn.HALF_ROW_COUNT + 1 and 12 or 0)
-                Noble.Text.draw(
-                    letter,
-                    x,
-                    y,
-                    Noble.Text.ALIGN_CENTER
-                )
+                self:drawLetter(x, y, letter, false)
+                -- Noble.Text.draw(
+                --     letter,
+                --     x,
+                --     y,
+                --     Noble.Text.ALIGN_CENTER
+                -- )
                 k += 1
             end
             i += 1
         end
     end
 
-    function this:oldDraw()
-        local sIndex = self.index - LetterColumn.HALF_ROW_COUNT
-        local eIndex = sIndex + LetterColumn.HALF_ROW_COUNT * 2
-        local k = 1
-        for n = sIndex, eIndex do
-            local i = Utilities.getModIndex(n, #self.letters)
-            local letter = self.letters[i]
-            local x = self.x + 15
-            local y = self.y + 10
-                + (k - 1) * LetterColumn.LETTER_SPACING
-                + (k < LetterColumn.HALF_ROW_COUNT + 1 and -8 or 0)
-                + (k > LetterColumn.HALF_ROW_COUNT + 1 and 12 or 0)
-
-            local l =
-                k == LetterColumn.HALF_ROW_COUNT + 1
-                and "*" .. letter .. "*"
-                or letter
-            if n == sIndex or n == eIndex then
-                l = "-"
-            end
-            if self.isSelected or k == LetterColumn.HALF_ROW_COUNT + 1 then
-                Noble.Text.draw(
-                    l,
-                    x,
-                    y,
-                    Noble.Text.ALIGN_CENTER
-                )
-            end
-            k += 1
+    function this:drawLetter(x, y, letters, isBold)
+        for i = 1, #letters do
+            local char = letters:sub(i, i)
+            Noble.Text.draw(
+                isBold and "*"..char.."*" or char,
+                x,
+                y,
+                Noble.Text.ALIGN_CENTER
+            )
+            x += LetterColumn.LETTER_SPACING
         end
     end
 
@@ -124,6 +92,7 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
         while self.disabledLetters[self.index] do
             self.index = self.index % #self.letters + 1
         end
+        self.count = string.len(self.letters[self.index])
     end
 
     function this:prevItem()
@@ -131,6 +100,7 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
         while self.disabledLetters[self.index] do
             self.index = (self.index - 2) % #self.letters + 1
         end
+        self.count = string.len(self.letters[self.index])
     end
 
     function this:setSelected(b)
