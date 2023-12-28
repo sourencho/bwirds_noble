@@ -27,6 +27,9 @@ function scene:init()
 		40,
 		130
 	)
+
+	scene.buyerOne = NobleSprite("assets/images/test_face.png")
+	scene.buyerTwo = NobleSprite("assets/images/test_face.png")
 end
 
 -- When transitioning from another scene, this runs as soon as this
@@ -34,6 +37,8 @@ end
 function scene:enter()
 	scene.super.enter(self)
 	-- Your code here
+	scene.buyerOne:add()
+	scene.buyerTwo:add()
 end
 
 -- This runs once a transition from another scene is complete.
@@ -60,22 +65,24 @@ function scene:drawBackground()
 		10,
 		Noble.Text.ALIGN_CENTER
 	)
-	Graphics.drawRoundRect(10, 30, 80, 100, 3)
-	Noble.Text.draw(
-		"*B* *I* *R* *X*\n*G* *M* *S* *V*\n*O* *W*\n*DS* *ES*",
-		50,
-		40,
-		Noble.Text.ALIGN_CENTER
-	)
-	Graphics.fillRoundRect(10, 30 + 100, 80, 100, 3)
-	Graphics.setImageDrawMode(Graphics.kDrawModeFillWhite)
-	Noble.Text.draw(
-		"*B* *I* *R* *X*\n*G* *M* *S* *V*\n*O* *W*\n*DS* *ES*",
-		50,
-		40 + 100,
-		Noble.Text.ALIGN_CENTER
-	)
-	Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
+	Graphics.drawRoundRect(10, 30, 80, 200, 3)
+	for i=1,#scene.letters do
+		Noble.Text.draw(
+			scene.letters[i],
+			10+40,
+			40+(i-1)*20,
+			Noble.Text.ALIGN_CENTER
+		)
+	end
+	-- Graphics.fillRoundRect(10, 30 + 100, 80, 100, 3)
+	-- Graphics.setImageDrawMode(Graphics.kDrawModeFillWhite)
+	-- Noble.Text.draw(
+	-- 	"*B* *I* *R* *X*\n*G* *M* *S* *V*\n*O* *W*\n*DS* *ES*",
+	-- 	50,
+	-- 	40 + 100,
+	-- 	Noble.Text.ALIGN_CENTER
+	-- )
+	-- Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
 
 	-- word scroller
 	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 222, 3)
@@ -90,10 +97,31 @@ function scene:drawBackground()
 		10,
 		Noble.Text.ALIGN_CENTER
 	)
-	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 202, 3)
-	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 201, 3)
-	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 200, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 120 + 2, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 120 + 1, 3)
+	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 120, 3)
 	scene.wordList:draw()
+
+	-- buyers
+	local buyerBoxX = 10 + 10 + 80 + 150 + 10
+	local buyerBoxY = 30 + 120 + 10
+	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 130, 70 + 2, 3)
+	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 130, 70 + 1, 3)
+	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 130, 70, 3)
+	scene.buyerOne:moveTo(buyerBoxX+20, buyerBoxY+10+10)
+	scene.buyerTwo:moveTo(buyerBoxX+20, buyerBoxY+10+10+20+10)
+	Noble.Text.draw(
+		"-*ED*",
+		buyerBoxX+40,
+		buyerBoxY+10+1,
+		Noble.Text.ALIGN_LEFT
+	)
+	Noble.Text.draw(
+		"*PLURAL",
+		buyerBoxX+40,
+		buyerBoxY+10+20+10+1,
+		Noble.Text.ALIGN_LEFT
+	)
 end
 
 -- This runs as as soon as a transition to another scene begins.
