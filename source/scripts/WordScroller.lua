@@ -3,6 +3,7 @@ import 'scripts/LetterColumn'
 
 WordScroller = {}
 
+WordScroller.MIN_SIZE = 3
 WordScroller.MAX_SIZE = 5
 WordScroller.COL_SPACING = 20
 
@@ -15,7 +16,7 @@ function WordScroller.new(__x, __y, __letters)
 
         self.index = 1
 
-        self.letters = __letters
+        self.letters = letters
         self.letterColumns = {}
         self.usedLetters = table.create(#self.letters, 0)
 
@@ -47,8 +48,13 @@ function WordScroller.new(__x, __y, __letters)
         end
 
         -- create
-        local letterColumn = LetterColumn.new(x, y, self.letters,
-            self.usedLetters)
+        local letterColumn = LetterColumn.new(
+            x,
+            y,
+            self.letters,
+            self.usedLetters,
+            steps >= WordScroller.MIN_SIZE
+        )
         table.insert(self.letterColumns, letterColumn)
     end
 
@@ -61,8 +67,13 @@ function WordScroller.new(__x, __y, __letters)
     end
 
     function this:nextItem()
-        self:addLetterColumn()
-        self.index = #self.letterColumns
+        local letterColumn = self.letterColumns[#self.letterColumns]
+        if letterColumn ~= nil and letterColumn:isLetterSubmit() then
+            return self:getCurrentWord()
+        else
+            self:addLetterColumn()
+            self.index = #self.letterColumns
+        end
     end
 
     function this:prevItem()
@@ -76,6 +87,18 @@ function WordScroller.new(__x, __y, __letters)
 
     function this:scrollDown()
         self.letterColumns[self.index]:nextItem()
+    end
+
+    -- TODO: Return nil if current word not valid
+    function this:getCurrentWord()
+        local word = table.reduce(self.letterColumns, function(acc, l)
+            return acc..l:getLetter()
+        end, "")
+        return word:sub(1, #word-1)
+    end
+
+    function this:getUsedLetterIndices()
+        return table.shallowcopy(self.usedLetters)
     end
 
     function this:update()
@@ -95,7 +118,7 @@ function WordScroller.new(__x, __y, __letters)
 
         local x = this.x + steps * WordScroller.COL_SPACING - 10
         local y = this.y +
-        (LetterColumn.HALF_ROW_COUNT + 1) * LetterColumn.LETTER_SPACING + 10
+            (LetterColumn.HALF_ROW_COUNT + 1) * LetterColumn.LETTER_SPACING + 10
         if tick % 50 > 25 then
             Graphics.setLineWidth(2)
             Graphics.drawLine(x, y, x + 10, y)

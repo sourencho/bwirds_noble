@@ -1,4 +1,5 @@
 import 'scripts/WordScroller'
+import 'scripts/WordList'
 
 
 WordScene = {}
@@ -14,21 +15,17 @@ scene.backgroundColor = Graphics.kColorWhite
 function scene:init()
 	scene.super.init(self)
 
-	-- variable1 = 100
-	-- SceneTemplate.variable2 = "string"
-	-- ...
-
-	-- Your code here
 	scene.tick = 0
 
-	-- scene.letters = { "B", "W", "I", "R", "D", "S", "O", "E", "S" }
 	scene.letters = { "A", "ED", "P", "L", "Y", "W", "I", "S", "ING"}
-	scene.wordScroller = WordScroller.new(
-		10 + 80 + 10 + 8,
-		20,
-		scene.letters
-		-- { "A", "B", "C", "D", "E"}
-		-- { "B", "W", "W" }
+	table.sort(scene.letters)
+
+	scene:createWordScroller(scene.letters)
+
+	scene.wordList = WordList.new(
+		10 + 10 + 80 + 150 + 20,
+		40,
+		130
 	)
 end
 
@@ -80,19 +77,15 @@ function scene:drawBackground()
 	)
 	Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
 
+	-- word scroller
 	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 222, 3)
 	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 221, 3)
 	Graphics.drawRoundRect(10 + 10 + 80, 10, 150, 220, 3)
-	-- Noble.Text.draw(
-	-- 	"^",
-	-- 	10 + 10 + 80 + 130,
-	-- 	110,
-	-- 	Noble.Text.ALIGN_LEFT
-	-- )
 	scene.wordScroller:draw(scene.tick)
 
+	-- word list
 	Noble.Text.draw(
-		"*CATALOG*",
+		"*BWIRDS*",
 		10 + 10 + 80 + 150 + 10 + 65,
 		10,
 		Noble.Text.ALIGN_CENTER
@@ -100,18 +93,7 @@ function scene:drawBackground()
 	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 202, 3)
 	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 201, 3)
 	Graphics.drawRoundRect(10 + 10 + 80 + 150 + 10, 30, 130, 200, 3)
-	Noble.Text.draw(
-		"*WORDS*",
-		10 + 10 + 80 + 150 + 20,
-		40,
-		Noble.Text.ALIGN_LEFT
-	)
-	Noble.Text.draw(
-		"*95*",
-		10 + 10 + 80 + 150 + 20 + 90,
-		40,
-		Noble.Text.ALIGN_LEFT
-	)
+	scene.wordList:draw()
 end
 
 -- This runs as as soon as a transition to another scene begins.
@@ -189,7 +171,10 @@ scene.inputHandler = {
 	--
 	rightButtonDown = function()
 		-- Your code here
-		scene.wordScroller:nextItem()
+		local submittedWord = scene.wordScroller:nextItem()
+		if submittedWord ~= nil then
+			scene:submitWord(submittedWord)
+		end
 	end,
 	rightButtonHold = function()
 		-- Your code here
@@ -236,3 +221,27 @@ scene.inputHandler = {
 		-- Your code here
 	end
 }
+
+-- Custom methods
+
+function scene:createWordScroller(letters)
+	scene.wordScroller = WordScroller.new(
+		10 + 80 + 10 + 8,
+		20,
+		letters
+	)
+end
+
+function scene:submitWord(word)
+	scene.wordList:addWord(word)
+
+	-- remove used letters
+	local usedLetterIndices = scene.wordScroller:getUsedLetterIndices()
+	for i=#usedLetterIndices, 1, -1 do
+		if usedLetterIndices[i] then
+			table.remove(scene.letters, i)
+		end
+	end
+
+	scene:createWordScroller(scene.letters)
+end

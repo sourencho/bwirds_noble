@@ -2,8 +2,9 @@ LetterColumn = {}
 
 LetterColumn.HALF_ROW_COUNT = 4
 LetterColumn.LETTER_SPACING = 20
+LetterColumn.SUBMIT_CHAR = ">"
 
-function LetterColumn.new(__x, __y, __letters, __disabledLetters)
+function LetterColumn.new(__x, __y, __letters, __disabledLetters, __submittable)
     local this = {}
 
     function this:init()
@@ -14,7 +15,9 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
 
         self.letters = {}
         table.shallowcopy(__letters, self.letters)
-        table.sort(self.letters)
+        if __submittable then
+            table.insert(self.letters, LetterColumn.SUBMIT_CHAR)
+        end
 
         self.disabledLetters = table.create(#self.letters, 0)
         table.shallowcopy(__disabledLetters, self.disabledLetters)
@@ -43,8 +46,6 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
                 local y = self.y + 10 - 5
                     + (k - 1 + LetterColumn.HALF_ROW_COUNT) *
                     LetterColumn.LETTER_SPACING
-                -- + (k < LetterColumn.HALF_ROW_COUNT + 1 and -8 or 0)
-                -- + (k > LetterColumn.HALF_ROW_COUNT + 1 and 12 or 0)
                 self:drawLetter(x, y, letter, false)
                 k -= 1
             end
@@ -62,12 +63,6 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
                     + (k + LetterColumn.HALF_ROW_COUNT) *
                     LetterColumn.LETTER_SPACING
                 self:drawLetter(x, y, letter, false)
-                -- Noble.Text.draw(
-                --     letter,
-                --     x,
-                --     y,
-                --     Noble.Text.ALIGN_CENTER
-                -- )
                 k += 1
             end
             i += 1
@@ -78,7 +73,7 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
         for i = 1, #letters do
             local char = letters:sub(i, i)
             Noble.Text.draw(
-                isBold and "*"..char.."*" or char,
+                isBold and "*" .. char .. "*" or char,
                 x,
                 y,
                 Noble.Text.ALIGN_CENTER
@@ -88,17 +83,25 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
     end
 
     function this:nextItem()
-        self.index = self.index % #self.letters + 1
-        while self.disabledLetters[self.index] do
-            self.index = self.index % #self.letters + 1
+        if self.index == #self.letters then return end
+        local nextIndex = self.index + 1
+        while self.disabledLetters[nextIndex] do
+            nextIndex += 1
+        end
+        if nextIndex <= #self.letters then
+            self.index = nextIndex
         end
         self.count = string.len(self.letters[self.index])
     end
 
     function this:prevItem()
-        self.index = (self.index - 2) % #self.letters + 1
-        while self.disabledLetters[self.index] do
-            self.index = (self.index - 2) % #self.letters + 1
+        if self.index == 0 then return end
+        local nextIndex = self.index - 1
+        while self.disabledLetters[nextIndex] do
+            nextIndex -= 1
+        end
+        if nextIndex > 0 then
+            self.index = nextIndex
         end
         self.count = string.len(self.letters[self.index])
     end
@@ -125,6 +128,14 @@ function LetterColumn.new(__x, __y, __letters, __disabledLetters)
         for i = 1, #self.letters do
             self.disabledLetters[i] = enabled
         end
+    end
+
+    function this:getLetter()
+        return self.letters[self.index]
+    end
+
+    function this:isLetterSubmit()
+        return self:getLetter() == LetterColumn.SUBMIT_CHAR
     end
 
     this:init()
