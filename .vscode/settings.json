@@ -1,0 +1,6 @@
+{
+  "playdate.output": "bin/Output.pdx",
+  "Lua.diagnostics.disable": [
+    "lowercase-global"
+  ]
+}
