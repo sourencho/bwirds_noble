@@ -1,12 +1,12 @@
-import 'scripts/LetterTile'
+import 'scripts/Bwird'
 import 'scripts/Cursor'
 import 'scripts/Bag'
 import 'scenes/WordScene'
 
 
-MainScene = {}
-class("MainScene").extends(NobleScene)
-local scene = MainScene
+CollectScene = {}
+class("CollectScene").extends(NobleScene)
+local scene = CollectScene
 
 -- It is recommended that you declare, but don't yet define,
 -- your scene-specific varibles and methods here. Use "local" where possible.
@@ -30,7 +30,7 @@ function scene:init()
 	-- ...
 
 	-- Your code here
-	MainScene.tick = 0
+	CollectScene.tick = 0
 end
 
 -- When transitioning from another scene, this runs as soon as this
@@ -54,7 +54,7 @@ end
 function scene:update()
 	scene.super.update(self)
 	-- Your code here
-	MainScene.tick += 1
+	CollectScene.tick += 1
 	self.cursor:update()
 end
 
@@ -204,13 +204,13 @@ function initTiles()
 	scene.letterTiles = table.create(#letters, 0)
 
 	for i = 1, #letters do
-		local letterTile = LetterTile.new(
+		local bwird = Bwird.new(
 			letters[i],
-			math.random(0 + 10, 400 - LetterTile.SIZE_X - 10),
-			math.random(0 + 10, 240 - LetterTile.SIZE_Y - 40)
+			math.random(0 + 10, 400 - Bwird.SIZE_X - 10),
+			math.random(0 + 10, 240 - Bwird.SIZE_Y - 40)
 		)
-		table.insert(scene.letterTiles, letterTile)
-		letterTile:add()
+		table.insert(scene.letterTiles, bwird)
+		bwird:add()
 	end
 end
 

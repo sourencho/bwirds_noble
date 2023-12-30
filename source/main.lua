@@ -1,6 +1,6 @@
 import 'libraries/noble/Noble'
 import 'utilities/Utilities'
-import 'scenes/MainScene'
+import 'scenes/CollectScene'
 import 'scenes/WordScene'
 
 
@@ -14,4 +14,4 @@ Noble.GameData.setup({
 
 Noble.showFPS = true
 
-Noble.new(WordScene)
+Noble.new(CollectScene)
