@@ -3,6 +3,7 @@ import 'scripts/BwirdDir'
 import 'scripts/Bwird'
 import 'scripts/Cursor'
 import 'scripts/Bag'
+import 'constants/Def'
 
 
 CollectScene = {}
@@ -31,7 +32,7 @@ function scene:init()
 	-- ...
 
 	-- Your code here
-	CollectScene.tick = 0
+	scene.tick = 0
 end
 
 -- When transitioning from another scene, this runs as soon as this
@@ -40,11 +41,15 @@ function scene:enter()
 	scene.super.enter(self)
 
 	-- Your code here
+	scene.roundEndTime = playdate.getCurrentTimeMilliseconds() +
+		Def.COLLECT_ROUND_TIME
+
 	local letters = {
 		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
 		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
 	}
 	scene.bwirdDir = BwirdDir.new(letters)
+
 	scene.cursor = Cursor.new(200, 200, 8)
 	scene.bag = Bag.new()
 end
@@ -58,8 +63,16 @@ end
 -- This runs once per frame.
 function scene:update()
 	scene.super.update(self)
+
 	-- Your code here
-	CollectScene.tick += 1
+	scene.tick += 1
+
+	if playdate.getCurrentTimeMilliseconds() > self.roundEndTime then
+		Noble.transition(WordScene, nil, Noble.Transition.SlideOffLeft)
+		return
+	end
+
+	self.bwirdDir:update(scene.tick)
 	self.cursor:update()
 end
 
@@ -71,6 +84,15 @@ function scene:drawBackground()
 	drawTiles()
 	scene.cursor:draw()
 	scene.bag:draw()
+
+	-- UI
+	Noble.Text.draw(
+		math.floor((self.roundEndTime - playdate.getCurrentTimeMilliseconds()) /
+		1000),
+		Def.SCREEN.x - 16,
+		Def.SCREEN.y - 20,
+		Noble.Text.ALIGN_CENTER
+	)
 end
 
 -- This runs as as soon as a transition to another scene begins.
@@ -118,7 +140,7 @@ scene.inputHandler = {
 			scene.cursor.size
 		)
 		for _, l in ipairs(caputuredLetters) do
-        	scene.bag:addLetter(l)
+			scene.bag:addLetter(l)
 		end
 	end,
 	AButtonUp = function() -- Runs once when button is released.
@@ -133,7 +155,6 @@ scene.inputHandler = {
 	end,
 	BButtonHeld = function()
 		-- Your code here
-		Noble.transition(WordScene, nil, Noble.Transition.SlideOffLeft)
 	end,
 	BButtonHold = function()
 		-- Your code here

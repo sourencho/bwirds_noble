@@ -50,11 +50,31 @@ function BwirdDir.new(__letterCorpus)
     end
 
     function this:update(__tick)
+        local removeCount = 0
+        for i = #self.bwirds, 1, -1 do
+            local bwird = self.bwirds[i]
+            if bwird:isExpired() then
+                self:removeBwird(i)
+                removeCount += 1
+            end
+        end
+
+        for i = 1, removeCount do
+            self:addBwird()
+        end
     end
 
     function this:draw(__tick)
         for _, bwird in ipairs(self.bwirds) do
+            if __tick % 3 == 0 and bwird:expireTimeLeft() < 1000 then
+                Graphics.setImageDrawMode(Graphics.kDrawModeFillBlack)
+            end
+
             bwird:draw()
+
+            if __tick % 3 == 0 and bwird:expireTimeLeft() < 1000 then
+                Graphics.setImageDrawMode(Graphics.kDrawModeCopy)
+            end
         end
     end
 
@@ -62,17 +82,16 @@ function BwirdDir.new(__letterCorpus)
         local capturedLetters = {}
 
         for i = #self.bwirds, 1, -1 do
-        	local bwird = self.bwirds[i]
-        	local distSqr = Utilities.vDistSqr(bwird:getCenter(), __cursorPos)
-        	if (distSqr < Utilities.sqr(__cursorSize + 10)) then
+            local bwird = self.bwirds[i]
+            local distSqr = Utilities.vDistSqr(bwird:getCenter(), __cursorPos)
+            if (distSqr < Utilities.sqr(__cursorSize + 10)) then
                 self:removeBwird(i)
                 table.insert(capturedLetters, bwird.letter)
-        	end
+            end
         end
 
         return capturedLetters
     end
-
 
     this:init()
 

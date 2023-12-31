@@ -1,7 +1,10 @@
 Def = {}
 
 Def.VERSION = 0.1
-Def.CENTER = { 200, 120 }
+Def.CENTER = { x = 200, y = 120 }
+Def.SCREEN = { x = 400, y = 240 }
+
+Def.COLLECT_ROUND_TIME = 20000
 
 Def.LETTER_FREQ = {
     A = 8.17,
