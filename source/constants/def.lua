@@ -6,6 +6,16 @@ Def.SCREEN = { x = 400, y = 240 }
 
 Def.COLLECT_ROUND_TIME = 20000
 
+Def.FLY_OFFSET = {
+    0,
+    -1,
+    -2,
+    1,
+    2,
+    1,
+
+}
+
 Def.LETTER_FREQ = {
     A = 8.17,
     B = 1.49,
