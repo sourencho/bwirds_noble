@@ -17,8 +17,7 @@ Def.FLY_OFFSET_Y = {
 }
 
 Def.LETTER_OFFSET = {
-    Q = { x = 0, y = -1 },
-    W = { x = 1, y = 0 }
+    Q = { x = 0, y = -1 }
 }
 
 Def.LETTER_FREQ = {
