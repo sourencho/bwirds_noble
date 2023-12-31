@@ -1,7 +1,8 @@
+import 'scenes/WordScene'
+import 'scripts/BwirdDir'
 import 'scripts/Bwird'
 import 'scripts/Cursor'
 import 'scripts/Bag'
-import 'scenes/WordScene'
 
 
 CollectScene = {}
@@ -39,7 +40,8 @@ function scene:enter()
 	scene.super.enter(self)
 
 	-- Your code here
-	initTiles()
+	local letters = { "A", "B", "C", "D", "E", "F", "G", "H" }
+	scene.bwirdDir = BwirdDir.new(letters)
 	scene.cursor = Cursor.new(200, 200, 8)
 	scene.bag = Bag.new()
 end
@@ -62,6 +64,7 @@ end
 function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
+	scene.bwirdDir:draw(scene.tick)
 	drawTiles()
 	scene.cursor:draw()
 	scene.bag:draw()
@@ -107,7 +110,13 @@ scene.inputHandler = {
 	AButtonHeld = function() -- Runs after button is held for 1 second.
 		-- Your code here
 		scene.cursor:applyAInputHeld()
-		attemptCapture()
+		local caputuredLetters = scene.bwirdDir:attemptCapture(
+			scene.cursor.pos,
+			scene.cursor.size
+		)
+		for _, l in ipairs(caputuredLetters) do
+        	scene.bag:addLetter(l)
+		end
 	end,
 	AButtonUp = function() -- Runs once when button is released.
 		-- Your code here
@@ -199,44 +208,5 @@ scene.inputHandler = {
 	end
 }
 
-function initTiles()
-	local letters = { "A", "B", "C", "D", "E", "F", "G", "H" }
-	scene.letterTiles = table.create(#letters, 0)
-
-	for i = 1, #letters do
-		local bwird = Bwird.new(
-			letters[i],
-			math.random(0 + 10, 400 - Bwird.SIZE_X - 10),
-			math.random(0 + 10, 240 - Bwird.SIZE_Y - 40)
-		)
-		table.insert(scene.letterTiles, bwird)
-		bwird:add()
-	end
-end
-
 function drawTiles()
-	for i = 1, #scene.letterTiles do
-		local tile = scene.letterTiles[i]
-		if tile == nil then
-			goto cont
-		end
-		tile:draw()
-		::cont::
-	end
-end
-
-function attemptCapture()
-	for i = #scene.letterTiles, 1, -1 do
-		local tile = scene.letterTiles[i]
-		if tile == nil then -- todo: figure out how to do continue in lua
-			goto cont
-		end
-		local distSqr = Utilities.vDistSqr(tile:getCenter(), scene.cursor.pos)
-		if (distSqr < Utilities.sqr(scene.cursor.size + 10)) then
-			scene.bag:addLetter(tile.letter)
-			table.remove(scene.letterTiles, i)
-			tile:remove()
-		end
-		::cont::
-	end
 end

@@ -77,3 +77,12 @@ function any(__table)
     end
     return false
 end
+
+function table.removeByValue(__table, __value)
+    for i, v in ipairs(__table) do
+        if v == __value then
+            table.remove(__table, i)
+            break
+        end
+    end
+end
