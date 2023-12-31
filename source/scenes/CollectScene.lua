@@ -40,7 +40,10 @@ function scene:enter()
 	scene.super.enter(self)
 
 	-- Your code here
-	local letters = { "A", "B", "C", "D", "E", "F", "G", "H" }
+	local letters = {
+		"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+		"N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+	}
 	scene.bwirdDir = BwirdDir.new(letters)
 	scene.cursor = Cursor.new(200, 200, 8)
 	scene.bag = Bag.new()

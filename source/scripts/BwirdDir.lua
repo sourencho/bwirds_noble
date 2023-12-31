@@ -1,4 +1,6 @@
 import 'scripts/Bwird'
+import 'scripts/Bwird'
+import 'constants/Def'
 
 
 BwirdDir = {}
@@ -12,7 +14,9 @@ function BwirdDir.new(__letterCorpus)
         self.bwirds = table.create(BwirdDir.MAX_COUNT, 0)
 
         self.letterCorpus = {}
-        table.shallowcopy(__letterCorpus, self.letterCorpus)
+        for _, l in ipairs(__letterCorpus) do
+            self:addLetter(l)
+        end
 
         self.bwird_count = 8
 
@@ -21,9 +25,13 @@ function BwirdDir.new(__letterCorpus)
         end
     end
 
+    function this:addLetter(__l)
+        self.letterCorpus[__l] = Def.LETTER_FREQ[__l]
+    end
+
     function this:addBwird()
         local bwird = Bwird.new(
-            table.random(self.letterCorpus),
+            table.randomWeighted(self.letterCorpus),
             math.random(0 + 10, 400 - Bwird.SIZE_X - 10),
             math.random(0 + 10, 240 - Bwird.SIZE_Y - 40)
         )

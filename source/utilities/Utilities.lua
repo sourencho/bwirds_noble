@@ -86,3 +86,23 @@ function table.removeByValue(__table, __value)
         end
     end
 end
+
+function table.randomWeighted(__frequencyTable)
+    local totalWeight = 0
+
+    -- Calculate the total weight of all elements in the frequency table
+    for _, weight in pairs(__frequencyTable) do
+        totalWeight = totalWeight + weight
+    end
+
+    -- Generate a random value between 0 and the total weight
+    local randomValue = math.random() * totalWeight
+
+    -- Iterate over the frequency table to find the selected element
+    for letter, weight in pairs(__frequencyTable) do
+        randomValue = randomValue - weight
+        if randomValue <= 0 then
+            return letter
+        end
+    end
+end
