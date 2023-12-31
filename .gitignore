@@ -45,3 +45,5 @@ source/libraries/noble/docs/
 
 .DS_Store
 bin/
+
+source/pdxinfo
