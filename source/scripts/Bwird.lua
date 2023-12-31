@@ -42,9 +42,10 @@ function Bwird.new(__letter, __x, __y)
         self.pos = { x = x, y = y }
 
         -- Create animated sprite
-        self.tileImage = Graphics.imagetable.new("assets/images/tile_small")
+        self.tileImage = Graphics.imagetable.new("assets/images/bwird_angel_wing1")
         self.tileAnimation = Noble.Animation.new(self.tileImage)
-        self.tileAnimation:addState("default", 1, 2, nil, true, nil, 8)
+        self.tileAnimation:addState("default", 1, 7, nil, true, nil, 3)
+        
         self.tileSprite = NobleSprite(self.tileAnimation)
 
         -- expiration
