@@ -18,7 +18,7 @@ function BwirdDir.new(__letterCorpus)
             self:addLetter(l)
         end
 
-        self.bwird_count = 8
+        self.bwird_count = 5
 
         for i = 1, self.bwird_count do
             self:addBwird()

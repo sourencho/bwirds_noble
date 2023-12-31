@@ -1,7 +1,7 @@
 Bwird = {}
 
 Bwird.LETTER_OFFSET_X = 0
-Bwird.LETTER_OFFSET_Y = -9
+Bwird.LETTER_OFFSET_Y = -11
 Bwird.SIZE_X = 60
 Bwird.SIZE_Y = 40
 
@@ -20,11 +20,18 @@ function Bwird.new(__letter, __x, __y)
     end
 
     function this:draw()
+        local offsetX = Def.LETTER_OFFSET[self.letter] == nil and
+            0 or Def.LETTER_OFFSET[self.letter].x
+        local offsetY = Def.LETTER_OFFSET[self.letter] == nil and
+            0 or Def.LETTER_OFFSET[self.letter].y
+        if (self.tileAnimation.currentFrame <= 7) then
+            offsetY += Def.FLY_OFFSET_Y[self.tileAnimation.currentFrame]
+        end
         self.tileSprite:draw(self.pos.x, self.pos.y)
         Noble.Text.draw(
             self.letterStr,
-            self.pos.x + Bwird.LETTER_OFFSET_X + (Bwird.SIZE_X / 2),
-            self.pos.y + Bwird.LETTER_OFFSET_Y + (Bwird.SIZE_Y / 2),
+            self.pos.x + Bwird.LETTER_OFFSET_X + (Bwird.SIZE_X / 2) + offsetX,
+            self.pos.y + Bwird.LETTER_OFFSET_Y + (Bwird.SIZE_Y / 2) + offsetY,
             Noble.Text.ALIGN_CENTER
         )
     end
@@ -45,7 +52,7 @@ function Bwird.new(__letter, __x, __y)
         self.tileImage = Graphics.imagetable.new("assets/images/bwird_angel_wing1")
         self.tileAnimation = Noble.Animation.new(self.tileImage)
         self.tileAnimation:addState("default", 1, 7, nil, true, nil, 3)
-        
+
         self.tileSprite = NobleSprite(self.tileAnimation)
 
         -- expiration
