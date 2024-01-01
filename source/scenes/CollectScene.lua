@@ -68,8 +68,7 @@ function scene:update()
 	scene.tick += 1
 
 	if playdate.getCurrentTimeMilliseconds() > self.roundEndTime then
-		Noble.transition(WordScene, nil, Noble.Transition.SlideOffLeft)
-		return
+		scene:switchToWordScene()
 	end
 
 	self.bwirdDir:update(scene.tick)
@@ -81,14 +80,13 @@ function scene:drawBackground()
 	scene.super.drawBackground(self)
 	-- Your code here
 	scene.bwirdDir:draw(scene.tick)
-	drawTiles()
 	scene.cursor:draw()
 	scene.bag:draw()
 
 	-- UI
 	Noble.Text.draw(
 		math.floor((self.roundEndTime - playdate.getCurrentTimeMilliseconds()) /
-		1000),
+			1000),
 		Def.SCREEN.x - 16,
 		Def.SCREEN.y - 20,
 		Noble.Text.ALIGN_CENTER
@@ -158,6 +156,7 @@ scene.inputHandler = {
 	end,
 	BButtonHold = function()
 		-- Your code here
+		Display.setInverted(true)
 	end,
 	BButtonUp = function()
 		-- Your code here
@@ -232,5 +231,8 @@ scene.inputHandler = {
 	end
 }
 
-function drawTiles()
+function scene:switchToWordScene()
+	Noble.GameData.letters = {}
+	table.shallowcopy(scene.bag.letters, Noble.GameData.letters)
+	Noble.transition(WordScene, nil, Noble.Transition.SlideOffLeft)
 end

@@ -90,6 +90,10 @@ function BwirdDir.new(__letterCorpus)
             end
         end
 
+        for i = 1, #capturedLetters do
+            self:addBwird()
+        end
+
         return capturedLetters
     end
 

@@ -11,6 +11,24 @@ Bwird.EXPIRE_TIME_MAX = 10
 function Bwird.new(__letter, __x, __y)
     local this = {}
 
+    function this:init(x, y, letter)
+        self.letter = letter
+        self.letterStr = "*" .. letter .. "*"
+        self.pos = { x = x, y = y }
+
+        -- Create animated sprite
+        self.tileImage = Graphics.imagetable.new(
+            "assets/images/bwird_angel_wing1")
+        self.tileAnimation = Noble.Animation.new(self.tileImage)
+        self.tileAnimation:addState("default", 1, 7, nil, true, nil, 3)
+
+        self.tileSprite = NobleSprite(self.tileAnimation)
+
+        -- expiration
+        self.expire_time = playdate.getCurrentTimeMilliseconds() +
+            1000 * math.random(Bwird.EXPIRE_TIME_MIN, Bwird.EXPIRE_TIME_MAX)
+    end
+
     function this:add()
         self.tileSprite:add()
     end
@@ -34,6 +52,8 @@ function Bwird.new(__letter, __x, __y)
             self.pos.y + Bwird.LETTER_OFFSET_Y + (Bwird.SIZE_Y / 2) + offsetY,
             Noble.Text.ALIGN_CENTER
         )
+
+        Graphics.setColor(Graphics.kColorBlack)
     end
 
     function this:getCenter()
@@ -41,23 +61,6 @@ function Bwird.new(__letter, __x, __y)
             x = self.pos.x + Bwird.SIZE_X / 2,
             y = self.pos.y + Bwird.SIZE_Y / 2,
         }
-    end
-
-    function this:init(x, y, letter)
-        self.letter = letter
-        self.letterStr = "*" .. letter .. "*"
-        self.pos = { x = x, y = y }
-
-        -- Create animated sprite
-        self.tileImage = Graphics.imagetable.new("assets/images/bwird_angel_wing1")
-        self.tileAnimation = Noble.Animation.new(self.tileImage)
-        self.tileAnimation:addState("default", 1, 7, nil, true, nil, 3)
-
-        self.tileSprite = NobleSprite(self.tileAnimation)
-
-        -- expiration
-        self.expire_time = playdate.getCurrentTimeMilliseconds() +
-            1000 * math.random(Bwird.EXPIRE_TIME_MIN, Bwird.EXPIRE_TIME_MAX)
     end
 
     function this:isExpired()

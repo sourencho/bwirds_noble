@@ -17,7 +17,8 @@ function scene:init()
 
 	scene.tick = 0
 
-	scene.letters = { "A", "ED", "P", "L", "Y", "W", "I", "S", "ING", "X", "E"}
+	scene.letters = {}
+	table.shallowcopy(Noble.GameData.letters, scene.letters)
 	table.sort(scene.letters)
 
 	scene:createWordScroller(scene.letters)
@@ -65,17 +66,17 @@ function scene:drawBackground()
 		10,
 		Noble.Text.ALIGN_CENTER
 	)
-	Graphics.drawRoundRect(10, 30, 80, 200+2, 3)
-	Graphics.drawRoundRect(10, 30, 80, 200+1, 3)
+	Graphics.drawRoundRect(10, 30, 80, 200 + 2, 3)
+	Graphics.drawRoundRect(10, 30, 80, 200 + 1, 3)
 	Graphics.drawRoundRect(10, 30, 80, 200, 3)
-	for r=0,8 do
-		for c=0,1 do
-			local n = r+1 + c*9
+	for r = 0, 8 do
+		for c = 0, 1 do
+			local n = r + 1 + c * 9
 			if n <= #scene.letters then
 				Noble.Text.draw(
 					scene.letters[n],
-					37*(c+1)-5,
-					10+30+r*20,
+					37 * (c + 1) - 5,
+					10 + 30 + r * 20,
 					Noble.Text.ALIGN_CENTER
 				)
 			end
@@ -106,18 +107,18 @@ function scene:drawBackground()
 	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 110, 70 + 2, 3)
 	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 110, 70 + 1, 3)
 	Graphics.drawRoundRect(buyerBoxX, buyerBoxY, 110, 70, 3)
-	scene.buyerOne:moveTo(buyerBoxX+20, buyerBoxY+10+10)
-	scene.buyerTwo:moveTo(buyerBoxX+20, buyerBoxY+10+10+20+10)
+	scene.buyerOne:moveTo(buyerBoxX + 20, buyerBoxY + 10 + 10)
+	scene.buyerTwo:moveTo(buyerBoxX + 20, buyerBoxY + 10 + 10 + 20 + 10)
 	Noble.Text.draw(
 		"-*ED*",
-		buyerBoxX+40,
-		buyerBoxY+10+1,
+		buyerBoxX + 40,
+		buyerBoxY + 10 + 1,
 		Noble.Text.ALIGN_LEFT
 	)
 	Noble.Text.draw(
 		"*PLURAL",
-		buyerBoxX+40,
-		buyerBoxY+10+20+10+1,
+		buyerBoxX + 40,
+		buyerBoxY + 10 + 20 + 10 + 1,
 		Noble.Text.ALIGN_LEFT
 	)
 
@@ -275,7 +276,7 @@ function scene:submitWord(word)
 
 	-- remove used letters
 	local usedLetterIndices = scene.wordScroller:getUsedLetters()
-	for i=#usedLetterIndices, 1, -1 do
+	for i = #usedLetterIndices, 1, -1 do
 		if usedLetterIndices[i] then
 			table.remove(scene.letters, i)
 		end

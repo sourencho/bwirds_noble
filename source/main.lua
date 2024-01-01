@@ -9,7 +9,7 @@ Noble.Settings.setup({
 })
 
 Noble.GameData.setup({
-	Score = 0
+	letters = {}
 })
 
 Noble.showFPS = true
